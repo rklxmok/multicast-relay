@@ -1,0 +1,12 @@
+[Unit]
+Description=Multicast relay health check
+
+[Service]
+Type=oneshot
+ExecStart=/opt/mcast-relay/check-relay.sh
+# check-relay.sh writes its counter state to /var/lib/mcast-relay:
+ReadWritePaths=/var/lib/mcast-relay
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes

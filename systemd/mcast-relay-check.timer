@@ -1,0 +1,9 @@
+[Unit]
+Description=Hourly multicast relay health check
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+
+[Install]
+WantedBy=timers.target

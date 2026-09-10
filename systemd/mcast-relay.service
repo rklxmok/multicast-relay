@@ -1,0 +1,30 @@
+[Unit]
+Description=Multicast paging relay
+Documentation=file:/opt/mcast-relay/README.md
+After=network-online.target nftables.service
+Wants=network-online.target
+# If the nftables ruleset fails to load, the relay must not run with
+# unicast forwarding wide open:
+Requires=nftables.service
+# Do not start before guided setup has produced a config:
+ConditionPathExists=/opt/mcast-relay/relay.conf
+
+[Service]
+Type=simple
+# Validate config before start (also protects against a bad edit):
+ExecStartPre=/usr/bin/python3 /opt/mcast-relay/mcast-relay.py --check
+ExecStart=/usr/bin/python3 /opt/mcast-relay/mcast-relay.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+AmbientCapabilities=CAP_NET_ADMIN CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target
